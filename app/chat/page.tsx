@@ -10,11 +10,8 @@ export default function ChatPage({ searchParams }: { searchParams: { persona?: s
         <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
             <Sidebar />
             <div className="flex-1 flex flex-col">
-                <Header />
-                <main className="flex flex-col flex-1 p-4 gap-4">
-                    <div className="text-blue-700 font-semibold">
-                        Current Persona: {persona}
-                    </div>
+                {/* <Header /> */}
+                <main className="flex flex-col items-center flex-1 p-4 ">
                     <ChatWindow />
                     <ChatInput />
                 </main>
