@@ -1,8 +1,12 @@
 
+import PersonaSelector from "@/components/elements/PersonaSelector";
+
 export default function Home() {
   return (
-    <h1 className="text-3xl font-bold underline bg-amber-300">
-      Hello world!
-    </h1>
-  )
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-blue-100">
+      <main className="flex flex-col flex-1 p-4 gap-4">
+        <PersonaSelector />
+      </main>
+    </div>
+  );
 }
