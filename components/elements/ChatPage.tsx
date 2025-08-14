@@ -5,6 +5,9 @@ export default function ChatWindow() {
     const [messages, setMessages] = useState<{ text: string; sender: "user" | "bot" }[]>([
         { text: "Hello! How can I help?", sender: "bot" },
     ]);
+    const [streaming, setStreaming] = useState(false);
+    const [streamResponse, setStreamResponse] = useState("");
+
     const chatRef = useRef<HTMLDivElement>(null);
 
     // Scroll to bottom when messages change
@@ -12,36 +15,69 @@ export default function ChatWindow() {
         if (chatRef.current) {
             chatRef.current.scrollTop = chatRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, [messages, streamResponse]);
 
-    // Function to send message to API
-    const sendMessage = async (message: string) => {
+    // Send a message via streaming API
+    const handleStreamChat = async (message: string) => {
         setMessages((prev) => [...prev, { text: message, sender: "user" }]);
+        setStreaming(true);
+        setStreamResponse("");
+
         try {
-            const res = await fetch("/api/chat", {
+            const res = await fetch("/api/chat-stream", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message }),
             });
 
-            const data = await res.json();
-            setMessages((prev) => [
-                ...prev,
-                { text: message, sender: "user" },
-                { text: data.response || "No response", sender: "bot" },
-            ]);
+            if (!res.body) throw new Error("No response body");
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let partialMessage = "";
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split("\n");
+
+                for (const line of lines) {
+                    const trimmed = line.trim();
+                    if (trimmed.startsWith("data:")) {
+                        const jsonStr = trimmed.replace(/^data:\s*/, "");
+                        if (jsonStr !== "[DONE]") {
+                            try {
+                                const data = JSON.parse(jsonStr);
+                                if (data.content) {
+                                    partialMessage += data.content;
+                                    setStreamResponse((prev) => prev + data.content);
+                                }
+                            } catch (err) {
+                                console.error("JSON parse error", err, jsonStr);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Append final bot message
+            setMessages((prev) => [...prev, { text: partialMessage, sender: "bot" }]);
         } catch (error: any) {
             setMessages((prev) => [
                 ...prev,
                 { text: "Error: " + error.message, sender: "bot" },
             ]);
+        } finally {
+            setStreaming(false);
         }
     };
 
-    // Pass sendMessage to ChatInput using custom event
+    // Listen for send-message event
     useEffect(() => {
         const handler = (e: CustomEvent) => {
-            sendMessage(e.detail);
+            handleStreamChat(e.detail);
         };
         window.addEventListener("send-message", handler as EventListener);
         return () => {
@@ -50,10 +86,7 @@ export default function ChatWindow() {
     }, []);
 
     return (
-        <div
-            ref={chatRef}
-            className="w-[50%] flex-1 overflow-y-auto p-4 rounded-t-lg"
-        >
+        <div ref={chatRef} className="w-[50%] flex-1 overflow-y-auto p-4 rounded-t-lg">
             {messages.map((msg, index) => (
                 <div
                     key={index}
@@ -69,6 +102,14 @@ export default function ChatWindow() {
                     </div>
                 </div>
             ))}
+
+            {streaming && (
+                <div className="mb-4 text-left">
+                    <div className="p-3 rounded-lg inline-block bg-blue-200 text-black">
+                        {streamResponse || "⏳ Typing..."}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
