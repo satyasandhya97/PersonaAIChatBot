@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Send } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
@@ -17,7 +17,11 @@ export default function ChatInput() {
 
     const handleSend = () => {
         if (!message.trim()) return;
-        console.log("Send:", message);
+
+        // Dispatch event to ChatWindow
+        const event = new CustomEvent("send-message", { detail: message.trim() });
+        window.dispatchEvent(event);
+
         setMessage("");
     };
 

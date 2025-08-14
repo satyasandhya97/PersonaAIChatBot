@@ -1,10 +1,9 @@
 import ChatInput from "@/components/elements/ChatInput";
-import ChatWindow from "@/components/elements/ChatWindow";
+import ChatWindow from "@/components/elements/ChatPage";
 import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
 
-export default function ChatPage({ searchParams }: { searchParams: { persona?: string } }) {
-    const persona = searchParams.persona || "1";
+export default async function ChatPage({ searchParams }: { searchParams: { persona?: string } }) {
 
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
