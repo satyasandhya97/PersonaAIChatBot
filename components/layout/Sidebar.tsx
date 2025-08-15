@@ -7,7 +7,6 @@ import {
     MessageCircle,
     MoreHorizontal,
     Trash2,
-    Moon,
     PanelLeftClose,
     PanelLeftOpen
 } from "lucide-react";
