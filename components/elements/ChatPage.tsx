@@ -1,5 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import TypingBubble from "@/components/elements/TypingBubble";
+import { Copy } from "lucide-react";
 
 export default function ChatWindow() {
     const [messages, setMessages] = useState<{ text: string; sender: "user" | "bot" }[]>([
@@ -91,30 +93,46 @@ export default function ChatWindow() {
     }, []);
 
     return (
-        <div ref={chatRef} className="w-[50%] flex-1 overflow-y-auto p-4 rounded-t-lg">
+        <div
+            ref={chatRef}
+            className="w-[50%] flex-1 p-4 rounded-t-lg overflow-y-auto 
+                   max-h-[70vh] scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-transparent"
+            style={{
+                scrollBehavior: "smooth",
+            }}
+        >
             {messages.map((msg, index) => (
                 <div
                     key={index}
-                    className={`mb-4 ${msg.sender === "user" ? "text-right" : "text-left"}`}
+                    className={`mb-4 flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                 >
-                    <div
-                        className={`p-3 rounded-lg inline-block ${msg.sender === "user"
-                            ? "bg-blue-500 text-white"
-                            : "bg-blue-200 text-black"
-                            }`}
-                    >
-                        {msg.text}
+                    <div className={`flex items-start gap-2 group ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                        <div
+                            className={`p-3 rounded-lg inline-block ${msg.sender === "user"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-blue-200 text-black"
+                                }`}
+                        >
+                            {msg.text}
+                        </div>
+
+                        {msg.sender === "bot" && (
+                            <button
+                                onClick={() => navigator.clipboard.writeText(msg.text)}
+                                className="opacity-0 group-hover:opacity-100 transition p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+                                title="Copy to clipboard"
+                            >
+                                <Copy className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                            </button>
+                        )}
                     </div>
                 </div>
             ))}
 
-            {streaming && (
-                <div className="mb-4 text-left">
-                    <div className="p-3 rounded-lg inline-block bg-blue-200 text-black">
-                        {streamResponse || "⏳ Typing..."}
-                    </div>
-                </div>
-            )}
+
+
+            {streaming && <TypingBubble text={streamResponse} />}
         </div>
     );
+
 }
