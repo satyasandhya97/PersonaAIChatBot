@@ -32,7 +32,7 @@ export default function ChatInput() {
 
     return (
         <div className="w-full max-w-3xl mx-auto p-4">
-            <div className="flex items-end gap-2 rounded-full border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-md px-4 py-2">
+            <div className="flex items-center gap-2 rounded-full border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-md px-4 py-2">
                 <textarea
                     ref={textareaRef}
                     value={message}
