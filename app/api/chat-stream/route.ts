@@ -49,10 +49,11 @@ export async function POST(request: Request) {
         Connection: "keep-alive",
       },
     });
-  } catch (error: any) {
-    console.error("Chat API Error:", error);
-    return new Response(JSON.stringify({ error: error.message || "Failed to process" }), {
-      status: 500,
-    });
-  }
+  }catch (error: unknown) {
+        console.error("Chat API Error:", error);
+        return new Response(
+            JSON.stringify({ error: error }),
+            { status: 500 }
+        );
+    }
 }
