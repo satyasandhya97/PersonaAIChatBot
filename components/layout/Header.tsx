@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Moon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { Moon, ArrowLeft } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 const personas = [
@@ -20,6 +20,7 @@ const personas = [
 
 export default function Header() {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const personaId = Number(searchParams.get("persona"));
 
     const persona = useMemo(() => {
@@ -27,41 +28,47 @@ export default function Header() {
     }, [personaId]);
 
     return (
-        <header className="flex justify-center border-b border-gray-200 dark:border-slate-700 shadow-sm bg-white dark:bg-slate-900">
-            {/* Inner container to match ChatWindow width */}
-            <div className="w-[50%] flex justify-between items-center p-4">
-                {/* Left: Persona Avatar + Name + Status */}
+        <header className="flex justify-center border-b border-gray-200 dark:border-slate-700 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-slate-800 dark:to-slate-700 rounded-t-2xl shadow-md">
+            <div className="w-full max-w-4xl flex justify-between items-center p-4">
                 <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => router.push("/")}
+                        className="p-2 rounded-md hover:bg-white/20 transition text-white"
+                        aria-label="Go back"
+                    >
+                        <ArrowLeft className="w-5 h-5" />
+                    </button>
+
                     {persona ? (
                         <>
                             <Image
                                 src={persona.image}
                                 alt={persona.name}
-                                width={40}
-                                height={40}
-                                className="rounded-full border border-gray-300 dark:border-slate-600"
+                                width={44}
+                                height={44}
+                                className="rounded-full border-2 border-white dark:border-slate-700 shadow-sm"
                             />
                             <div>
-                                <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                                <h1 className="text-lg font-semibold text-white dark:text-gray-100">
                                     {persona.name}
                                 </h1>
-                                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                <div className="flex items-center gap-2 text-sm text-blue-100 dark:text-gray-400">
+                                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                                     <span>Online</span>
                                 </div>
                             </div>
                         </>
                     ) : (
-                        <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                        <h1 className="text-lg font-semibold text-white dark:text-gray-100">
                             AI Assistant
                         </h1>
                     )}
                 </div>
 
-                {/* Right: Theme Toggle */}
+                {/* Theme Toggle */}
                 <div className="flex gap-4">
                     <button
-                        className="bg-transparent cursor-pointer text-gray-900 dark:text-gray-100 text-xl p-2 rounded-md hover:bg-gray-100 dark:hover:bg-slate-800 transition"
+                        className="bg-transparent text-white dark:text-gray-100 p-2 rounded-md hover:bg-white/20 transition"
                         aria-label="Toggle theme"
                     >
                         <Moon className="w-6 h-6" />
@@ -71,4 +78,3 @@ export default function Header() {
         </header>
     );
 }
-

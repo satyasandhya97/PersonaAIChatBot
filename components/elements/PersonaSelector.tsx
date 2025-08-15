@@ -33,22 +33,19 @@ export default function PersonaSelector() {
     ];
 
     return (
-        <section className="relative overflow-hidden min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-6">
-            {/* Glass Circles (Background Decoration) */}
+        <section className="relative overflow-hidden min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 flex items-center justify-center p-6">
             <div className="absolute w-64 h-64 bg-gradient-to-br from-blue-700/80 to-white/20 rounded-full top-[20%] left-[10%]"></div>
             <div className="absolute w-64 h-64 bg-gradient-to-br from-cyan-400/80 to-white/20 rounded-full bottom-[20%] right-[10%]"></div>
 
-            {/* Container */}
             <div className="flex justify-around gap-5 px-80 w-full z-10">
                 {personas.map((p) => (
                     <div
                         key={p.id}
                         onClick={() => router.push(`/chat?persona=${p.id}`)}
-                        className="relative text-center p-8 rounded-2xl bg-white/30 w-[80%] backdrop-blur-md shadow-lg 
-                       hover:shadow-2xl hover:scale-105 transition-transform duration-500 
-                       cursor-pointer overflow-hidden group"
+                        className="relative text-center p-8 rounded-2xl bg-white/80 dark:bg-slate-900/80 w-[80%] backdrop-blur-lg shadow-lg 
+                hover:shadow-2xl hover:scale-105 transition-transform duration-500 
+                cursor-pointer overflow-hidden group border border-gray-200 dark:border-slate-800"
                     >
-                        {/* Avatar Image */}
                         <div className="w-24 h-24 mx-auto mb-4 rounded-full border-2 border-white shadow-lg overflow-hidden">
                             <Image
                                 src={p.image}
@@ -59,45 +56,17 @@ export default function PersonaSelector() {
                             />
                         </div>
 
-                        {/* Title & Description */}
-                        <h3 className="text-lg font-semibold text-gray-800">{p.name}</h3>
-                        <p className="text-gray-600 text-sm mt-2">{p.description}</p>
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{p.name}</h3>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">{p.description}</p>
 
-                        {/* Button */}
                         <button className="mt-4 px-6 py-2 rounded-lg bg-blue-600 text-white font-medium transition hover:bg-blue-700">
                             Chat Now
                         </button>
-
-                        {/* Social Icons (Slide-in Animation) */}
-                        <div className="absolute top-1/2 -translate-y-1/2 left-4 flex flex-col space-y-4">
-                            <a
-                                href={p.socials.instagram}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-800 hover:text-pink-500 transform -translate-x-20 group-hover:translate-x-0 transition duration-300"
-                            >
-                                <Instagram className="w-6 h-6" />
-                            </a>
-                            <a
-                                href={p.socials.facebook}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-800 hover:text-pink-600 transform -translate-x-20 group-hover:translate-x-0 transition duration-500"
-                            >
-                                <Facebook className="w-6 h-6" />
-                            </a>
-                            <a
-                                href={p.socials.linkedin}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-800 hover:text-pink-700 transform -translate-x-20 group-hover:translate-x-0 transition duration-700"
-                            >
-                                <Linkedin className="w-6 h-6" />
-                            </a>
-                        </div>
                     </div>
                 ))}
             </div>
         </section>
+
+
     );
 }

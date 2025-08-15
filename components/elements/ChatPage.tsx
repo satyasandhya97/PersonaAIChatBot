@@ -95,22 +95,19 @@ export default function ChatWindow() {
     return (
         <div
             ref={chatRef}
-            className="w-[50%] flex-1 p-4 rounded-t-lg overflow-y-auto 
-                   max-h-[70vh] scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-transparent"
-            style={{
-                scrollBehavior: "smooth",
-            }}
+            className="w-full max-w-3xl mx-auto p-4 space-y-4 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 dark:scrollbar-thumb-blue-700 scrollbar-track-transparent"
+            style={{ scrollBehavior: "smooth" }}
         >
             {messages.map((msg, index) => (
                 <div
                     key={index}
-                    className={`mb-4 flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+                    className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                 >
                     <div className={`flex items-start gap-2 group ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}>
                         <div
-                            className={`p-3 rounded-lg inline-block ${msg.sender === "user"
-                                    ? "bg-blue-500 text-white"
-                                    : "bg-blue-200 text-black"
+                            className={`px-4 py-2 rounded-2xl shadow-sm ${msg.sender === "user"
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-100 text-gray-900 dark:bg-slate-800 dark:text-gray-100"
                                 }`}
                         >
                             {msg.text}
@@ -119,7 +116,7 @@ export default function ChatWindow() {
                         {msg.sender === "bot" && (
                             <button
                                 onClick={() => navigator.clipboard.writeText(msg.text)}
-                                className="opacity-0 group-hover:opacity-100 transition p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+                                className="opacity-0 group-hover:opacity-100 transition p-1 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
                                 title="Copy to clipboard"
                             >
                                 <Copy className="w-4 h-4 text-gray-600 dark:text-gray-300" />
@@ -129,10 +126,9 @@ export default function ChatWindow() {
                 </div>
             ))}
 
-
-
             {streaming && <TypingBubble text={streamResponse} />}
         </div>
+
     );
 
 }
