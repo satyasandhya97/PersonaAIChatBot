@@ -12,22 +12,12 @@ export default function PersonaSelector() {
             name: "Hitesh choudhary",
             description: "I am a teacher. Click me to ask any questions about coding, career, or learning!",
             image: "/hitesh.webp",
-            socials: {
-                instagram: "#",
-                facebook: "#",
-                linkedin: "#",
-            }
         },
         {
             id: 2,
             name: "piyush garg",
             description: "I am a teacher, ready to help with any project or idea you have.",
             image: "/piyush.png",
-            socials: {
-                instagram: "#",
-                facebook: "#",
-                linkedin: "#",
-            }
         }
     ];
 

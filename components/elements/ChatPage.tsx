@@ -1,8 +1,19 @@
 "use client";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 import TypingBubble from "@/components/elements/TypingBubble";
 import { Copy, User } from "lucide-react";
+
+interface ChatPart {
+    text: string;
+}
+
+interface ChatData {
+    content?: {
+        parts: ChatPart[];
+    };
+}
 
 export default function ChatWindow() {
     const searchParams = useSearchParams();
@@ -17,7 +28,6 @@ export default function ChatWindow() {
     const [messages, setMessages] = useState<{ text: string; sender: "user" | "bot" }[]>([
         { text: initialMessage, sender: "bot" },
     ]);
-
     const [streaming, setStreaming] = useState(false);
     const [streamResponse, setStreamResponse] = useState("");
 
@@ -35,7 +45,7 @@ export default function ChatWindow() {
         }
     }, [messages, streamResponse]);
 
-    const handleStreamChat = async (message: string) => {
+    const handleStreamChat = useCallback(async (message: string) => {
         setMessages((prev) => [...prev, { text: message, sender: "user" }]);
         setStreaming(true);
         setStreamResponse("");
@@ -66,13 +76,11 @@ export default function ChatWindow() {
                         const jsonStr = trimmed.replace(/^data:\s*/, "");
                         if (jsonStr !== "[DONE]") {
                             try {
-                                const data = JSON.parse(jsonStr);
-                                if (data.content?.parts && data.content.parts.length > 0) {
-                                    const rawText = data.content.parts.map((p: any) => p.text).join("");
-                                    const cleanText = rawText.replace(/[*_~`]/g, "").trim();
-                                    partialMessage += cleanText;
-                                    setStreamResponse((prev) => prev + cleanText);
-                                }
+                                const data: ChatData = JSON.parse(jsonStr);
+                                const parts = data.content?.parts ?? [];
+                                const cleanText = parts.map((p) => p.text.replace(/[*_~`]/g, "").trim()).join("");
+                                partialMessage += cleanText;
+                                setStreamResponse((prev) => prev + cleanText);
                             } catch (err) {
                                 console.error("JSON parse error", err, jsonStr);
                             }
@@ -82,22 +90,24 @@ export default function ChatWindow() {
             }
 
             setMessages((prev) => [...prev, { text: partialMessage, sender: "bot" }]);
-        } catch (error: any) {
-            setMessages((prev) => [...prev, { text: "Error: " + error.message, sender: "bot" }]);
+        } catch (error: unknown) {
+            const message =
+                error instanceof Error ? error.message : "Failed to process message";
+            setMessages((prev) => [...prev, { text: "Error: " + message, sender: "bot" }]);
         } finally {
             setStreaming(false);
         }
-    };
+    }, [persona]);
 
     useEffect(() => {
-        const handler = (e: CustomEvent) => {
+        const handler = (e: CustomEvent<string>) => {
             handleStreamChat(e.detail);
         };
         window.addEventListener("send-message", handler as EventListener);
         return () => {
             window.removeEventListener("send-message", handler as EventListener);
         };
-    }, []);
+    }, [handleStreamChat]);
 
     return (
         <div
@@ -109,28 +119,34 @@ export default function ChatWindow() {
                 const avatar =
                     msg.sender === "bot" ? (
                         personaParam === "1" ? (
-                            <img src="/hitesh.webp" alt="Hitesh" className="w-8 h-8 rounded-full object-cover" />
+                            <Image
+                                src="/hitesh.webp"
+                                alt="Hitesh"
+                                width={32}
+                                height={32}
+                                className="rounded-full object-cover"
+                            />
                         ) : personaParam === "2" ? (
-                            <img src="/piyush.png" alt="Piyush" className="w-8 h-8 rounded-full object-cover" />
+                            <Image
+                                src="/piyush.png"
+                                alt="Piyush"
+                                width={32}
+                                height={32}
+                                className="rounded-full object-cover"
+                            />
                         ) : (
                             <User className="w-8 h-8 text-gray-500" />
                         )
                     ) : null;
 
                 return (
-                    <div
-                        key={index}
-                        className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-                    >
-                        <div
-                            className={`flex items-start gap-2 group ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"
-                                }`}
-                        >
+                    <div key={index} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
+                        <div className={`flex items-start gap-2 group ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}>
                             {avatar}
                             <div
                                 className={`px-4 py-2 rounded-2xl shadow-sm ${msg.sender === "user"
-                                    ? "bg-blue-500 text-white"
-                                    : "bg-gray-100 text-gray-900 dark:bg-slate-800 dark:text-gray-100"
+                                        ? "bg-blue-500 text-white"
+                                        : "bg-gray-100 text-gray-900 dark:bg-slate-800 dark:text-gray-100"
                                     }`}
                             >
                                 {msg.text}
