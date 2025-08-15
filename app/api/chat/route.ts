@@ -22,10 +22,10 @@ export async function POST(request: Request) {
         console.log("Gemini reply:", reply);
 
         return Response.json({ response: reply });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Chat API Error:", error);
-        return Response.json(
-            { error: error.message || "Failed to process" },
+        return new Response(
+            JSON.stringify({ error: error }),
             { status: 500 }
         );
     }

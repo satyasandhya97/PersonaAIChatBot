@@ -1,9 +1,9 @@
 import ChatInput from "@/components/elements/ChatInput";
 import ChatWindow from "@/components/elements/ChatPage";
 import Header from "@/components/layout/Header";
-import Sidebar from "@/components/layout/Sidebar";
 
-export default async function ChatPage({ searchParams }: { searchParams: { persona?: string } }) {
+
+export default function ChatPage() {
 
     return (
         <div className="flex min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 justify-center items-center px-4">
@@ -22,7 +22,6 @@ export default async function ChatPage({ searchParams }: { searchParams: { perso
                 </div>
             </div>
         </div>
-
-
     );
 }
+

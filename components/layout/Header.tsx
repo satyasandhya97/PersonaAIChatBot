@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Moon, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useMemo } from "react";
 

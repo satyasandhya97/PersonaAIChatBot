@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Instagram, Facebook, Linkedin } from "lucide-react";
 
 export default function PersonaSelector() {
     const router = useRouter();
