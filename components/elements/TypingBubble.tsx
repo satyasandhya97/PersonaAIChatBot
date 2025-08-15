@@ -14,7 +14,7 @@ export default function TypingBubble({ text }: { text: string }) {
     return (
         <div className="mb-4 text-left">
             <div className="p-3 rounded-lg inline-block bg-blue-200 text-black">
-                {text || `⏳ Typing${dots}`}
+                {text || `✍Typing${dots}`}
             </div>
         </div>
     );

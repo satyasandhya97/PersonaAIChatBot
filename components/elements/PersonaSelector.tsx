@@ -33,9 +33,14 @@ export default function PersonaSelector() {
     ];
 
     return (
-        <section className="relative overflow-hidden min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 flex items-center justify-center p-6">
-            <div className="absolute w-64 h-64 bg-gradient-to-br from-blue-700/80 to-white/20 rounded-full top-[20%] left-[10%]"></div>
-            <div className="absolute w-64 h-64 bg-gradient-to-br from-cyan-400/80 to-white/20 rounded-full bottom-[20%] right-[10%]"></div>
+        <section className="relative overflow-hidden min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 flex flex-col items-center justify-center p-6">
+
+            <div className="absolute w-64 h-64 bg-gradient-to-br from-blue-700/80 to-white/20 rounded-full top-[20%] left-[10%] animate-pulse"></div>
+            <div className="absolute w-64 h-64 bg-gradient-to-br from-cyan-400/80 to-white/20 rounded-full bottom-[20%] right-[10%] animate-pulse delay-200"></div>
+
+            <h2 className="relative z-10 text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-12 tracking-tight text-center animate-fade-in-up">
+                ✨ Choose Your <span className="text-blue-600 dark:text-cyan-400">Mentor</span>
+            </h2>
 
             <div className="flex justify-around gap-5 px-80 w-full z-10">
                 {personas.map((p) => (
@@ -44,9 +49,9 @@ export default function PersonaSelector() {
                         onClick={() => router.push(`/chat?persona=${p.id}`)}
                         className="relative text-center p-8 rounded-2xl bg-white/80 dark:bg-slate-900/80 w-[80%] backdrop-blur-lg shadow-lg 
                 hover:shadow-2xl hover:scale-105 transition-transform duration-500 
-                cursor-pointer overflow-hidden group border border-gray-200 dark:border-slate-800"
+                cursor-pointer overflow-hidden group border border-gray-200 dark:border-slate-800 animate-fade-in-up"
                     >
-                        <div className="w-24 h-24 mx-auto mb-4 rounded-full border-2 border-white shadow-lg overflow-hidden">
+                        <div className="w-24 h-24 mx-auto mb-4 rounded-full border-2 border-white shadow-lg overflow-hidden group-hover:scale-110 transition-transform duration-300">
                             <Image
                                 src={p.image}
                                 alt={p.name}
@@ -56,7 +61,9 @@ export default function PersonaSelector() {
                             />
                         </div>
 
-                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{p.name}</h3>
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">
+                            {p.name}
+                        </h3>
                         <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">{p.description}</p>
 
                         <button className="mt-4 px-6 py-2 rounded-lg bg-blue-600 text-white font-medium transition hover:bg-blue-700">
@@ -65,8 +72,7 @@ export default function PersonaSelector() {
                     </div>
                 ))}
             </div>
+
         </section>
-
-
     );
 }
