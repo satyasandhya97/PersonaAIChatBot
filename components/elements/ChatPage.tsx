@@ -50,9 +50,14 @@ export default function ChatWindow() {
                         if (jsonStr !== "[DONE]") {
                             try {
                                 const data = JSON.parse(jsonStr);
-                                if (data.content) {
-                                    partialMessage += data.content;
-                                    setStreamResponse((prev) => prev + data.content);
+                                if (data.content?.parts && data.content.parts.length > 0) {
+                                    const rawText = data.content.parts.map((p: any) => p.text).join("");
+
+                                    // Remove Markdown symbols like *, _, ~, ` etc.
+                                    const cleanText = rawText.replace(/[*_~`]/g, "").trim();
+
+                                    partialMessage += cleanText;
+                                    setStreamResponse((prev) => prev + cleanText);
                                 }
                             } catch (err) {
                                 console.error("JSON parse error", err, jsonStr);
@@ -94,8 +99,8 @@ export default function ChatWindow() {
                 >
                     <div
                         className={`p-3 rounded-lg inline-block ${msg.sender === "user"
-                                ? "bg-blue-500 text-white"
-                                : "bg-blue-200 text-black"
+                            ? "bg-blue-500 text-white"
+                            : "bg-blue-200 text-black"
                             }`}
                     >
                         {msg.text}

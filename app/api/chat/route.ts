@@ -1,8 +1,4 @@
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(request: Request) {
     try {
@@ -12,21 +8,18 @@ export async function POST(request: Request) {
             return Response.json({ error: "Invalid message" }, { status: 400 });
         }
 
-        if (!process.env.OPENAI_API_KEY) {
-            throw new Error("OPENAI_API_KEY is missing");
+        if (!process.env.GEMINI_API_KEY) {
+            throw new Error("GEMINI_API_KEY is missing");
         }
 
-        const completion = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [
-                { role: "system", content: "You are a helpful chatbot." },
-                { role: "user", content: message },
-            ],
-        });
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-        const reply = completion.choices[0]?.message?.content || "";
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-        console.log("OpenAI reply:", reply);
+        const result = await model.generateContent(message);
+        const reply = result.response.text() || "";
+
+        console.log("Gemini reply:", reply);
 
         return Response.json({ response: reply });
     } catch (error: any) {
