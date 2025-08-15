@@ -21,9 +21,7 @@ export default function Sidebar() {
         ${isOpen ? "w-64" : "w-20"}`
             }
         >
-            {/* Top Section */}
             <div>
-                {/* Header with Toggle */}
                 <div className="flex items-center gap-2 p-4 border-b">
                     <Bot className="text-blue-600 w-6 h-6" />
                     {isOpen && <span className="font-bold text-lg text-blue-700">NeoChat</span>}
@@ -40,13 +38,11 @@ export default function Sidebar() {
                     </button>
                 </div>
 
-                {/* New Chat Button */}
                 <button className="w-[90%] flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition m-4">
                     <Plus size={18} />
                     {isOpen && <span>New Chat</span>}
                 </button>
 
-                {/* Chat History */}
                 <div className="px-4">
                     {isOpen && (
                         <h3 className="text-gray-500 text-sm mb-2">Chat History</h3>
@@ -63,9 +59,7 @@ export default function Sidebar() {
                 </div>
             </div>
 
-            {/* Bottom Section */}
             <div>
-                {/* Divider Line */}
                 <div className="border-t border-gray-200 my-2"></div>
 
                 <div className="px-4 py-4 space-y-2">

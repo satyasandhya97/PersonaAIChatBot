@@ -1,25 +1,40 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import TypingBubble from "@/components/elements/TypingBubble";
 import { Copy } from "lucide-react";
 
 export default function ChatWindow() {
+    const searchParams = useSearchParams();
+    const personaParam = searchParams.get("persona");
+
+    const initialMessage = useMemo(() => {
+        if (personaParam === "1") return "Hi, I’m Hitesh! How can I help you today?";
+        if (personaParam === "2") return "Hey, I’m Piyush! What can I do for you?";
+        return "Hello! How can I help?";
+    }, [personaParam]);
+
     const [messages, setMessages] = useState<{ text: string; sender: "user" | "bot" }[]>([
-        { text: "Hello! How can I help?", sender: "bot" },
+        { text: initialMessage, sender: "bot" },
     ]);
+
     const [streaming, setStreaming] = useState(false);
     const [streamResponse, setStreamResponse] = useState("");
 
+    const persona = useMemo(() => {
+        if (personaParam === "1") return "hitesh";
+        if (personaParam === "2") return "piyush";
+        return "hitesh";
+    }, [personaParam]);
+
     const chatRef = useRef<HTMLDivElement>(null);
 
-    // Scroll to bottom when messages change
     useEffect(() => {
         if (chatRef.current) {
             chatRef.current.scrollTop = chatRef.current.scrollHeight;
         }
     }, [messages, streamResponse]);
 
-    // Send a message via streaming API
     const handleStreamChat = async (message: string) => {
         setMessages((prev) => [...prev, { text: message, sender: "user" }]);
         setStreaming(true);
@@ -29,7 +44,7 @@ export default function ChatWindow() {
             const res = await fetch("/api/chat-stream", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message }),
+                body: JSON.stringify({ message, persona }),
             });
 
             if (!res.body) throw new Error("No response body");
@@ -54,10 +69,7 @@ export default function ChatWindow() {
                                 const data = JSON.parse(jsonStr);
                                 if (data.content?.parts && data.content.parts.length > 0) {
                                     const rawText = data.content.parts.map((p: any) => p.text).join("");
-
-                                    // Remove Markdown symbols like *, _, ~, ` etc.
                                     const cleanText = rawText.replace(/[*_~`]/g, "").trim();
-
                                     partialMessage += cleanText;
                                     setStreamResponse((prev) => prev + cleanText);
                                 }
@@ -69,19 +81,14 @@ export default function ChatWindow() {
                 }
             }
 
-            // Append final bot message
             setMessages((prev) => [...prev, { text: partialMessage, sender: "bot" }]);
         } catch (error: any) {
-            setMessages((prev) => [
-                ...prev,
-                { text: "Error: " + error.message, sender: "bot" },
-            ]);
+            setMessages((prev) => [...prev, { text: "Error: " + error.message, sender: "bot" }]);
         } finally {
             setStreaming(false);
         }
     };
 
-    // Listen for send-message event
     useEffect(() => {
         const handler = (e: CustomEvent) => {
             handleStreamChat(e.detail);
@@ -99,10 +106,7 @@ export default function ChatWindow() {
             style={{ scrollBehavior: "smooth" }}
         >
             {messages.map((msg, index) => (
-                <div
-                    key={index}
-                    className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-                >
+                <div key={index} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
                     <div className={`flex items-start gap-2 group ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}>
                         <div
                             className={`px-4 py-2 rounded-2xl shadow-sm ${msg.sender === "user"
@@ -128,7 +132,5 @@ export default function ChatWindow() {
 
             {streaming && <TypingBubble text={streamResponse} />}
         </div>
-
     );
-
 }

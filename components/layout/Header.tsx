@@ -65,15 +65,14 @@ export default function Header() {
                     )}
                 </div>
 
-                {/* Theme Toggle */}
-                <div className="flex gap-4">
+                {/* <div className="flex gap-4">
                     <button
                         className="bg-transparent text-white dark:text-gray-100 p-2 rounded-md hover:bg-white/20 transition"
                         aria-label="Toggle theme"
                     >
                         <Moon className="w-6 h-6" />
                     </button>
-                </div>
+                </div> */}
             </div>
         </header>
     );

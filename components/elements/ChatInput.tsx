@@ -6,7 +6,6 @@ export default function ChatInput() {
     const [message, setMessage] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    // Auto-resize textarea
     useEffect(() => {
         const textarea = textareaRef.current;
         if (textarea) {
@@ -18,7 +17,6 @@ export default function ChatInput() {
     const handleSend = () => {
         if (!message.trim()) return;
 
-        // Dispatch event to ChatWindow
         const event = new CustomEvent("send-message", { detail: message.trim() });
         window.dispatchEvent(event);
 

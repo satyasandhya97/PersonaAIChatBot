@@ -14,9 +14,9 @@ export default function PersonaSelector() {
             description: "I am a teacher. Click me to ask any questions about coding, career, or learning!",
             image: "/hitesh.webp",
             socials: {
-                instagram: "https://instagram.com/hitesh",
-                facebook: "https://facebook.com/hitesh",
-                linkedin: "https://linkedin.com/in/hitesh",
+                instagram: "#",
+                facebook: "#",
+                linkedin: "#",
             }
         },
         {
